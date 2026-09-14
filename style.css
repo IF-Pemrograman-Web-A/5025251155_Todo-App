@@ -1,0 +1,172 @@
+body{
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #ede8bf;
+  color: #333;
+}
+
+.site-header{
+  background-color: #fcfbfb;
+  border-bottom: 1px solid #dbd9d9;
+  padding: 20px;
+  text-align: center;
+}
+
+.site-header h1{
+  font-size: 22px;
+  color: #2d2d5d;
+  margin-bottom: 5px;
+}
+
+.site-header p{
+  font-size: 14px;
+  margin: 0;
+}
+
+.main-content{
+  display: flex;
+  max-width: 950px;
+  margin: 20px auto;
+  padding: 0 15px;
+}
+
+.panel{
+  background-color: #fffbfb;
+  border: 1px solid #d0cbcb;
+  padding: 15px;
+}
+
+.panel-list{
+  flex: 1;
+  margin-right: 15px;
+}
+
+.panel-detail{
+  flex: 1;
+}
+
+.panel h2{
+  font-size: 17px;
+  color: #34346d;
+  border-bottom: 1px solid #303060;
+  padding-bottom: 5px;
+  margin-bottom: 12px;
+}
+
+.panel h3{
+  font-size: 14px;
+  margin: 0 0 8px 0;
+}
+
+.todo-list{
+  list-style: none;
+  margin: 0 0 15px 0;
+  padding: 0;
+}
+
+.todo-item{
+  border: 1px solid #dad7d7;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+}
+
+.todo-info{
+  display: flex;
+  justify-content: space-between;
+}
+
+.todo-judul{
+  font-size: 14px;
+}
+
+.status{
+  font-size: 11px;
+  padding: 2px 6px;
+}
+
+.status-pending{
+  background-color: #f0e5c2;
+}
+
+.status-completed{
+  background-color: #cce7d3;
+}
+
+hr{
+  border: 0;
+  border-top: 1px solid #fffdfd;
+  margin: 15px 0;
+}
+
+.form-group{
+  margin-bottom: 10px;
+}
+
+.form-group label{
+  display: block;
+  font-size: 13px;
+  margin-bottom: 3px;
+}
+
+.form-group input[type="text"],
+.form-group textarea,
+.form-group select{
+  width: 100%;
+  padding: 6px;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  border: 1px solid #a19f9f;
+}
+
+.form-group textarea{
+  resize: vertical;
+}
+
+.form-kirim {
+  margin-top: 10px;
+}
+.btn{
+  padding: 6px 14px;
+  font-size: 14px;
+  border: 1px solid #969494;
+  cursor: pointer;
+  background-color: #eeeaea;
+}
+
+.btn-utama{
+  background-color: #323265;
+  color: #f5f3f3;
+  border-color: #303063;
+  margin-right: 8px;
+}
+
+.btn-hapus{
+  background-color: #eae6e6;
+  color: #c50909;
+  border-color: #770101;
+}
+
+.site-footer{
+  text-align: center;
+  padding: 12px;
+  border-top: 1px solid #c8c6c6;
+  background-color: #ffffff;
+  font-size: 12px;
+  color: #626161;
+  margin-top: 25px;
+}
+
+.site-footer p{
+  margin: 10px 0;
+}
+
+@media (max-width: 768px){
+  .main-content {
+    flex-direction: column;
+  }
+  .panel-list {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+}

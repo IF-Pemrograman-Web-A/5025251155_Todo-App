@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Todo List</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>My Todo List</h1>
+    <p>Tidak perlu melihat seluruh anak tangga, cukup ambil langkah pertama saja.</p>
+  </header>
+
+  <main class="main-content">
+    <section class="panel panel-list">
+      <h2>My Tasks</h2>
+      <ul class="todo-list">
+        <li class="todo-item">
+          <div class="todo-info">
+            <span class="todo-judul">Jogging tipis tipis</span>
+            <span class="status status-pending">Pending</span>
+          </div>
+        </li>
+
+        <li class="todo-item">
+          <div class="todo-info">
+            <span class="todo-judul">Belajar buat praktikum</span>
+            <span class="status status-pending">Pending</span>
+          </div>
+        </li>
+
+        <li class="todo-item">
+          <div class="todo-info">
+            <span class="todo-judul">Beresin tugas PWEB</span>
+            <span class="status status-completed">Completed</span>
+          </div>
+        </li>
+
+        <li class="todo-item">
+          <div class="todo-info">
+            <span class="todo-judul">Rapat</span>
+            <span class="status status-pending">Pending</span>
+          </div>
+        </li>
+      </ul>
+      <hr>
+      <div class="new-todo-form">
+        <h3>Add New Todo</h3>
+        <form action="#">
+          <div class="form-group">
+            <label for="new-judul">Judul</label>
+            <input type="text" id="new-judul" name="new-judul" placeholder="Masukkan judul todo">
+          </div>
+
+          <div class="form-group">
+            <label for="new-deskripsi">Deskripsi</label>
+            <input type="text" id="new-deskripsi" name="new-deskripsi" placeholder="Deskripsi singkat">
+          </div>
+
+          <button type="submit" class="btn btn-utama">Tambah</button>
+        </form>
+      </div>
+    </section>
+
+    <aside class="panel panel-detail">
+      <h2>Todo Detail</h2>
+      <form action="#" class="detail-form">
+        <div class="form-group">
+          <label for="detail-judul">Judul</label>
+          <input type="text" id="detail-judul" name="detail-judul" value="Jogging tipis tipis">
+        </div>
+
+        <div class="form-group">
+          <label for="detail-deskripsi">Deskripsi</label>
+          <textarea id="detail-deskripsi" name="detail-deskripsi" rows="6">Jogging santai keliling ITS sekitar 20-30 menit sebelum mulai kerjain tugas kuliah.</textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="detail-status">Status</label>
+          <select id="detail-status" name="detail-status">
+            <option value="pending" selected>Pending</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+
+        <div class="form-kirim">
+          <button type="submit" class="btn btn-utama">Simpan</button>
+          <button type="button" class="btn btn-hapus">Hapus</button>
+        </div>
+      </form>
+    </aside>
+  </main>
+  <footer class="site-footer">
+    <p>Todo App PWEB 2026</p>
+    <p>Wanhardo Jawak</p>
+  </footer>
+</body>
+</html>
