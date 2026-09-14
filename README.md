@@ -16,9 +16,9 @@
 ## Dokumentasi dan Preview
 ### Desktop
 Pada tampilan desktop, daftar todo dan detail todo berada dalam dua panel yang berdampingan.
-![Tampilan Desktop](/5025251155_Todo-App/assets/desktop.png)
+![Tampilan Desktop](/assets/desktop.png)
 
 ### Mobile
 Pada tampilan mobile, kedua panel tidak lagi berdampingan. Panel My Tasks berada di atas, kemudian panel Todo Detail berada di bawahnya.
-![Tampilan Mobile](/5025251155_Todo-App/assets/mobile1.png)
-![Tampilan Mobile](/5025251155_Todo-App/assets/mobile2.png)
+![Tampilan Mobile](/assets/mobile1.png)
+![Tampilan Mobile](/assets/mobile2.png)
