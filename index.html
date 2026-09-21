@@ -10,39 +10,15 @@
   <header class="site-header">
     <h1>My Todo List</h1>
     <p>Tidak perlu melihat seluruh anak tangga, cukup ambil langkah pertama saja.</p>
+    <button type="button" class="btn btn-tema">Mode Gelap</button>
   </header>
 
   <main class="main-content">
+
     <section class="panel panel-list">
       <h2>My Tasks</h2>
+
       <ul class="todo-list">
-        <li class="todo-item">
-          <div class="todo-info">
-            <span class="todo-judul">Jogging tipis tipis</span>
-            <span class="status status-pending">Pending</span>
-          </div>
-        </li>
-
-        <li class="todo-item">
-          <div class="todo-info">
-            <span class="todo-judul">Belajar buat praktikum</span>
-            <span class="status status-pending">Pending</span>
-          </div>
-        </li>
-
-        <li class="todo-item">
-          <div class="todo-info">
-            <span class="todo-judul">Beresin tugas PWEB</span>
-            <span class="status status-completed">Completed</span>
-          </div>
-        </li>
-
-        <li class="todo-item">
-          <div class="todo-info">
-            <span class="todo-judul">Rapat</span>
-            <span class="status status-pending">Pending</span>
-          </div>
-        </li>
       </ul>
       <hr>
       <div class="new-todo-form">
@@ -58,6 +34,11 @@
             <input type="text" id="new-deskripsi" name="new-deskripsi" placeholder="Deskripsi singkat">
           </div>
 
+          <div class="form-group">
+            <label for="new-deadline">Deadline</label>
+            <input type="date" id="new-deadline" name="new-deadline">
+          </div>
+
           <button type="submit" class="btn btn-utama">Tambah</button>
         </form>
       </div>
@@ -65,6 +46,7 @@
 
     <aside class="panel panel-detail">
       <h2>Todo Detail</h2>
+
       <form action="#" class="detail-form">
         <div class="form-group">
           <label for="detail-judul">Judul</label>
@@ -77,6 +59,11 @@
         </div>
 
         <div class="form-group">
+          <label for="detail-deadline">Deadline</label>
+          <input type="date" id="detail-deadline" name="detail-deadline" value="2026-09-22">
+        </div>
+
+        <div class="form-group">
           <label for="detail-status">Status</label>
           <select id="detail-status" name="detail-status">
             <option value="pending" selected>Pending</option>
@@ -84,8 +71,9 @@
           </select>
         </div>
 
-        <div class="form-kirim">
+        <div class="form-actions">
           <button type="submit" class="btn btn-utama">Simpan</button>
+          <button type="button" class="btn btn-edit">Edit</button>
           <button type="button" class="btn btn-hapus">Hapus</button>
         </div>
       </form>
@@ -95,5 +83,6 @@
     <p>Todo App PWEB 2026</p>
     <p>Wanhardo Jawak</p>
   </footer>
+  <script src="script.js"></script>
 </body>
 </html>

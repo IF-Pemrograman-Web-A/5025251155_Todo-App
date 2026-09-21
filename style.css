@@ -11,6 +11,7 @@ body{
   border-bottom: 1px solid #dbd9d9;
   padding: 20px;
   text-align: center;
+  position: relative;
 }
 
 .site-header h1{
@@ -69,15 +70,22 @@ body{
   border: 1px solid #dad7d7;
   padding: 8px 10px;
   margin-bottom: 6px;
+  cursor: pointer;
 }
 
 .todo-info{
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.todo-info input{
+  margin: 0 8px 0 0;
 }
 
 .todo-judul{
   font-size: 14px;
+  flex: 1;
 }
 
 .status{
@@ -110,6 +118,7 @@ hr{
 }
 
 .form-group input[type="text"],
+.form-group input[type="date"],
 .form-group textarea,
 .form-group select{
   width: 100%;
@@ -123,9 +132,10 @@ hr{
   resize: vertical;
 }
 
-.form-kirim {
+.form-actions{
   margin-top: 10px;
 }
+
 .btn{
   padding: 6px 14px;
   font-size: 14px;
@@ -137,6 +147,13 @@ hr{
 .btn-utama{
   background-color: #323265;
   color: #f5f3f3;
+  border-color: #303063;
+  margin-right: 8px;
+}
+
+.btn-edit{
+  background-color: #eae6e6;
+  color: #323265;
   border-color: #303063;
   margin-right: 8px;
 }
@@ -161,12 +178,136 @@ hr{
   margin: 10px 0;
 }
 
+.btn-tema{
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #000;
+  color: #fff;
+  border-color: #000;
+}
+
 @media (max-width: 768px){
-  .main-content {
+  .main-content{
     flex-direction: column;
   }
-  .panel-list {
+  .panel-list{
     margin-right: 0;
     margin-bottom: 15px;
   }
+  .btn-tema{
+    position: static;
+    margin-top: 10px;
+  }
+}
+
+.todo-item.aktif{
+  border-color: #6666a0;
+  background-color: rgba(100, 100, 200, 0.15);
+}
+
+.todo-judul.selesai{
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.todo-deadline{
+  font-size: 12px;
+  margin: 4px 0 0 21px;
+  opacity: 0.7;
+}
+
+.btn:disabled{
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/*dark mode*/
+input:disabled,
+textarea:disabled,
+select:disabled{
+  color: #333;
+  background-color: #f5f3f3;
+}
+
+body.dark{
+  background-color: #1e1e2e;
+  color: #e0e0e0;
+  color-scheme: dark;
+}
+
+body.dark .site-header,
+body.dark .site-footer,
+body.dark .panel{
+  background-color: #2a2a3c;
+  border-color: #444;
+  color: #ddd;
+}
+
+body.dark .site-header h1,
+body.dark .panel h2{
+  color: #b8b8ff;
+}
+
+body.dark .panel h2{
+  border-color: #6666a0;
+}
+
+body.dark .todo-item{
+  border-color: #444;
+}
+
+body.dark .todo-item.aktif{
+  border-color: #8888d0;
+}
+
+body.dark .status-pending{
+  background-color: #6b5a25;
+}
+
+body.dark .status-completed{
+  background-color: #2f5c3d;
+}
+
+body.dark .form-group input[type="text"],
+body.dark .form-group input[type="date"],
+body.dark .form-group textarea,
+body.dark .form-group select{
+  background-color: #1e1e2e;
+  color: #e0e0e0;
+  border-color: #666;
+}
+
+body.dark .form-group input:disabled,
+body.dark .form-group textarea:disabled,
+body.dark .form-group select:disabled{
+  background-color: #2a2a3c;
+}
+
+body.dark .btn{
+  background-color: #3a3a4c;
+  color: #e0e0e0;
+  border-color: #666;
+}
+
+body.dark .btn-utama{
+  background-color: #5555a0;
+  color: #fff;
+  border-color: #7777c0;
+}
+
+body.dark .btn-edit{
+  color: #b8b8ff;
+  border-color: #7777c0;
+}
+
+body.dark .btn-hapus{
+  color: #ff8a8a;
+  border-color: #a04444;
+}
+
+body.dark .btn-tema{
+  background-color: #fff;
+  color: #000;
+  border-color: #fff;
 }
