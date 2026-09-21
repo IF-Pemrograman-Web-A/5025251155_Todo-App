@@ -5,6 +5,7 @@
     Kelas   : Pemrograman Web (A)
 
 ## Deskripsi Singkat
+### E01
 - Header terdiri judul My Todo List dan deskripsi singkat. 
 - Panel kiri terdiri dari daftar todo, status todo, dan form add new todo. 
 - Panel kanan berisi detail todo yang dipilih, terdiri dari judul, deskripsi, status, serta tombol simpan, edit dan hapus. 
@@ -12,7 +13,12 @@
 - Terdapat daftar todo dengan status pending atau completed.
 - Terdapat form untuk menambahkan todo baru yang berisi judul, deskripsi dan deadline todo.
 - Terdapat bagian detail untuk melihat detail, mengedit atau menghapus todo yang dipilih.
-- Terdapat tombol Mode Gelap/Terang untuk menyesuaikan tema.
+  
+### E02
+- Todo baru bisa ditambahkan langsung ke daftar setelah mengisi judul, deskripsi, dan deadline, tanpa perlu refresh halaman. Proses ini menggunakan manipulasi DOM.
+- Setiap Todo memiliki tombol **edit**, **hapus**, dan checkbox. Tombol edit digunakan untuk mengubah isi Todo, sedangkan tombol hapus untuk menghapusnya. Jika checkbox dicentang, judul Todo akan dicoret sebagai tanda bahwa Todo sudah selesai.
+- Data Todo disimpan dalam bentuk array yang berisi object. Setiap object memiliki id, judul, deskripsi, deadline, dan status selesai. Data tidak disimpan di localStorage, jadi ketika halaman di-refresh, data akan kembali seperti kondisi awal.
+- Tersedia juga tombol untuk mengganti light mode dan dark mode. Perubahan tema dilakukan dengan mengganti class pada body, dan warna tombol juga ikut menyesuaikan dengan tema yang sedang digunakan.
 
 ## Dokumentasi dan Preview
 ### Desktop
