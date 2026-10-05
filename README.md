@@ -10,7 +10,7 @@
 - Panel kanan berisi detail todo yang dipilih, terdiri dari judul, deskripsi, status, serta tombol simpan, edit dan hapus. 
 - Footer berisi tahun dan nama pembuat. 
 - Terdapat daftar todo dengan status pending atau completed.
-- Terdapat form untuk menambahkan todo baru yang berisi judul, deskripsi, deadline todo, dan waktu notifikasi.
+- Terdapat form untuk menambahkan todo baru yang berisi judul, deskripsi, deadline todo, waktu notifikasi, dan ambil foto.
 - Terdapat bagian detail untuk melihat detail, mengedit atau menghapus todo yang dipilih.
 - Terdapat tombol Mode Gelap/Terang untuk menyesuaikan tema.
 
@@ -21,6 +21,8 @@
 ![Tampilan Awal Mode Terang](assetsE03/tampilan_awal_terang.png)
 - Halaman utama Mode Gelap
 ![Tampilan Awal Mode Terang](assetsE03/tampilan_awal_gelap.png)
+- Halaman utama pada mobile
+![Tampilan mobile](assetsE03/tampilan_awal_mobile.png)
 
 
 ### Web Storage
