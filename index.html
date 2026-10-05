@@ -7,16 +7,18 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Lewati ke konten utama</a>
+
   <header class="site-header">
     <h1>My Todo List</h1>
     <p>Tidak perlu melihat seluruh anak tangga, cukup ambil langkah pertama saja.</p>
     <button type="button" class="btn btn-tema">Mode Gelap</button>
   </header>
 
-  <main class="main-content">
+  <main class="main-content" id="main-content" tabindex="-1">
 
-    <section class="panel panel-list">
-      <h2>My Tasks</h2>
+    <section class="panel panel-list" aria-labelledby="judul-list">
+      <h2 id="judul-list">My Tasks</h2>
 
       <ul class="todo-list">
       </ul>
@@ -26,7 +28,7 @@
         <form action="#">
           <div class="form-group">
             <label for="new-judul">Judul</label>
-            <input type="text" id="new-judul" name="new-judul" placeholder="Masukkan judul todo">
+            <input type="text" id="new-judul" name="new-judul" placeholder="Masukkan judul todo" aria-required="true">
           </div>
 
           <div class="form-group">
@@ -39,18 +41,34 @@
             <input type="date" id="new-deadline" name="new-deadline">
           </div>
 
+          <div class="form-group">
+            <label for="new-notifikasi">Waktu Notifikasi</label>
+            <input type="datetime-local" id="new-notifikasi" name="new-notifikasi">
+          </div>
+
+          <div class="form-group" role="group" aria-labelledby="label-gambar">
+            <span class="label-teks" id="label-gambar">Gambar</span>
+            <video id="kamera-video" class="gambar-todo" autoplay playsinline muted hidden aria-label="Tampilan kamera"></video>
+            <canvas id="kamera-canvas" hidden></canvas>
+            <img id="preview-gambar" class="gambar-todo" alt="Pratinjau foto todo" hidden>
+            <button type="button" class="btn btn-kamera" id="btn-kamera">Buka Kamera</button>
+            <button type="button" class="btn btn-kamera" id="btn-foto" disabled>Ambil Foto</button>
+          </div>
+
+          <p class="pesan" id="pesan" role="status"></p>
+
           <button type="submit" class="btn btn-utama">Tambah</button>
         </form>
       </div>
     </section>
 
-    <aside class="panel panel-detail">
-      <h2>Todo Detail</h2>
+    <aside class="panel panel-detail" aria-labelledby="judul-detail">
+      <h2 id="judul-detail">Todo Detail</h2>
 
       <form action="#" class="detail-form">
         <div class="form-group">
           <label for="detail-judul">Judul</label>
-          <input type="text" id="detail-judul" name="detail-judul" value="Jogging tipis tipis">
+          <input type="text" id="detail-judul" name="detail-judul" value="Jogging tipis tipis" aria-required="true">
         </div>
 
         <div class="form-group">
@@ -64,11 +82,22 @@
         </div>
 
         <div class="form-group">
+          <label for="detail-notifikasi">Waktu Notifikasi</label>
+          <input type="datetime-local" id="detail-notifikasi" name="detail-notifikasi">
+        </div>
+
+        <div class="form-group">
           <label for="detail-status">Status</label>
           <select id="detail-status" name="detail-status">
             <option value="pending" selected>Pending</option>
             <option value="completed">Completed</option>
           </select>
+        </div>
+
+        <div class="form-group">
+          <span class="label-teks">Gambar</span>
+          <img id="detail-gambar" class="gambar-todo" alt="" hidden>
+          <p class="teks-kecil" id="detail-gambar-kosong">Belum ada gambar.</p>
         </div>
 
         <div class="form-actions">
