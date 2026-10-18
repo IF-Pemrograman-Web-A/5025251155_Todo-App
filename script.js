@@ -1,22 +1,10 @@
-const daftarAwal = [
-  { id: 1, judul: "Jogging tipis tipis", deskripsi: "Jogging santai keliling ITS sekitar 20-30 menit sebelum mulai kerjain tugas kuliah.", deadline: "2026-09-22", selesai: false, gambar: "", notifikasi: "", sudahNotif: false },
-  { id: 2, judul: "Belajar buat praktikum", deskripsi: "Baca modul dan latihan soal sebelum praktikum.", deadline: "2026-09-24", selesai: false, gambar: "", notifikasi: "", sudahNotif: false },
-  { id: 3, judul: "Beresin tugas PWEB", deskripsi: "Tugas HTML dan CSS sudah dikumpulkan.", deadline: "2026-09-20", selesai: false, gambar: "", notifikasi: "", sudahNotif: false },
-  { id: 4, judul: "Rapat", deskripsi: "Rapat kelompok lewat online.", deadline: "2026-09-26", selesai: false, gambar: "", notifikasi: "", sudahNotif: false }
-];
-let todos = [];
-let nextId = 1;
-let selectedId = null;
-let db;
-let gambarBaru = "";
+const dataNotifikasi = JSON.parse(document.getElementById("data-notifikasi").textContent);
 let streamKamera = null;
 
-const todoList = document.querySelector(".todo-list");
 const formTambah = document.querySelector(".new-todo-form form");
 const newJudul = document.getElementById("new-judul");
-const newDeskripsi = document.getElementById("new-deskripsi");
-const newDeadline = document.getElementById("new-deadline");
 const newNotifikasi = document.getElementById("new-notifikasi");
+const gambarData = document.getElementById("gambar-data");
 
 const kameraVideo = document.getElementById("kamera-video");
 const kameraCanvas = document.getElementById("kamera-canvas");
@@ -26,185 +14,40 @@ const btnFoto = document.getElementById("btn-foto");
 const pesan = document.getElementById("pesan");
 
 const formDetail = document.querySelector(".detail-form");
+const formHapus = document.getElementById("form-hapus");
+const fieldDetail = formDetail.querySelectorAll(".field-detail");
 const detailJudul = document.getElementById("detail-judul");
-const detailDeskripsi = document.getElementById("detail-deskripsi");
-const detailDeadline = document.getElementById("detail-deadline");
 const detailNotifikasi = document.getElementById("detail-notifikasi");
-const detailStatus = document.getElementById("detail-status");
-const detailGambar = document.getElementById("detail-gambar");
-const detailGambarKosong = document.getElementById("detail-gambar-kosong");
 const btnSimpan = document.querySelector(".detail-form .btn-utama");
 const btnEdit = document.querySelector(".btn-edit");
-const btnHapus = document.querySelector(".btn-hapus");
 const btnTema = document.querySelector(".btn-tema");
 
-function bukaDatabase(callback){
-  const request = indexedDB.open("todoDB", 1);
-
-  request.onupgradeneeded = function (event){
-    const database = event.target.result;
-    const store = database.createObjectStore("todos", { keyPath: "id" });
-    daftarAwal.forEach(function (todo){
-      store.add(todo);
-    });
-  };
-
-  request.onsuccess = function (event){
-    db = event.target.result;
-    callback();
-  };
-
-  request.onerror = function (){
-    alert("IndexedDB gagal dibuka!");
-  };
-}
-
-function ambilSemuaTodo(callback){
-  const store = db.transaction("todos", "readonly").objectStore("todos");
-  store.getAll().onsuccess = function (event){
-    callback(event.target.result);
-  };
-}
-
-function simpanKeDB(todo){
-  db.transaction("todos", "readwrite").objectStore("todos").put(todo);
-}
-
-function hapusDariDB(id){
-  db.transaction("todos", "readwrite").objectStore("todos").delete(id);
-}
-
-function getTodoTerpilih(){
-  return todos.find(function (todo){
-    return todo.id === selectedId;
-  });
-}
-
-function formatTanggal(tanggal){
-  const bagian = tanggal.split("-");
-  return bagian[2] + "/" + bagian[1] + "/" + bagian[0];
-}
-
-function tampilkanList(){
-  todoList.innerHTML = "";
-
-  todos.forEach(function (todo) {
-    const item = document.createElement("li");
-    item.className = "todo-item";
-    item.tabIndex = 0;
-    if (todo.id === selectedId){
-      item.classList.add("aktif");
-      item.setAttribute("aria-current", "true");
-    }
-
-    const info = document.createElement("div");
-    info.className = "todo-info";
-
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = todo.selesai;
-    checkbox.setAttribute("aria-label", "Tandai selesai: " + todo.judul);
-
-    const judul = document.createElement("span");
-    judul.className = "todo-judul";
-    judul.textContent = todo.judul;
-    if (todo.selesai) {
-      judul.classList.add("selesai");
-    }
-
-    const status = document.createElement("span");
-    status.className = "status";
-    if (todo.selesai) {
-      status.classList.add("status-completed");
-      status.textContent = "Completed";
-    } else {
-      status.classList.add("status-pending");
-      status.textContent = "Pending";
-    }
-
-    info.append(checkbox, judul, status);
-    item.appendChild(info);
-
-    if (todo.deadline !== ""){
-      const deadline = document.createElement("div");
-      deadline.className = "todo-deadline";
-      deadline.textContent = "Deadline: " + formatTanggal(todo.deadline);
-      item.appendChild(deadline);
-    }
-    todoList.appendChild(item);
-
-    checkbox.addEventListener("change", function () {
-      todo.selesai = checkbox.checked;
-      simpanKeDB(todo);
-      tampilkanList();
-      tampilkanDetail();
-      todoList.querySelectorAll("input[type='checkbox']")[todos.indexOf(todo)].focus();
-    });
-
-    item.addEventListener("click", function (e){
-      if (e.target === checkbox) return;
-      selectedId = todo.id;
-      tampilkanList();
-      tampilkanDetail();
-    });
-
-    item.addEventListener("keydown", function (e){
-      if (e.target !== item) return;
-      if (e.key === "Enter" || e.key === " "){
-        e.preventDefault();
-        selectedId = todo.id;
-        tampilkanList();
-        tampilkanDetail();
-        document.querySelector(".todo-item.aktif").focus();
-      }
-    });
-  });
-}
-
 function setEdit(boleh){
-  detailJudul.disabled = !boleh;
-  detailDeskripsi.disabled = !boleh;
-  detailDeadline.disabled = !boleh;
-  detailNotifikasi.disabled = !boleh;
-  detailStatus.disabled = !boleh;
+  fieldDetail.forEach(function (field){
+    field.disabled = !boleh;
+  });
   btnSimpan.disabled = !boleh;
 }
 
-function tampilkanDetail(){
-  const todo = getTodoTerpilih();
-  setEdit(false);
+setEdit(false);
 
-  if (!todo){
-    detailJudul.value = "";
-    detailDeskripsi.value = "";
-    detailDeadline.value = "";
-    detailNotifikasi.value = "";
-    detailStatus.value = "pending";
-    detailGambar.hidden = true;
-    detailGambarKosong.hidden = false;
-    btnEdit.disabled = true;
-    btnHapus.disabled = true;
-    return;
-  }
+document.querySelectorAll(".todo-item").forEach(function (item){
+  item.addEventListener("click", function (e){
+    if (e.target.closest("a") || e.target.closest("form")) return;
+    const link = item.querySelector("a");
+    if (link) window.location.href = link.href;
+  });
+});
 
-  detailJudul.value = todo.judul;
-  detailDeskripsi.value = todo.deskripsi;
-  detailDeadline.value = todo.deadline;
-  detailNotifikasi.value = todo.notifikasi;
-  detailStatus.value = todo.selesai ? "completed" : "pending";
+document.querySelectorAll(".form-selesai input[type='checkbox']").forEach(function (checkbox){
+  checkbox.addEventListener("change", function (){
+    checkbox.form.submit();
+  });
+});
 
-  if (todo.gambar !== ""){
-    detailGambar.src = todo.gambar;
-    detailGambar.alt = "Gambar untuk todo " + todo.judul;
-    detailGambar.hidden = false;
-    detailGambarKosong.hidden = true;
-  } else {
-    detailGambar.hidden = true;
-    detailGambarKosong.hidden = false;
-  }
-
-  btnEdit.disabled = false;
-  btnHapus.disabled = false;
+if (location.hash.indexOf("#cb-") === 0){
+  const checkbox = document.querySelector(location.hash);
+  if (checkbox) checkbox.focus();
 }
 
 function matikanKamera(){
@@ -250,8 +93,9 @@ btnFoto.addEventListener("click", function (){
   kameraCanvas.height = tinggi;
   kameraCanvas.getContext("2d").drawImage(kameraVideo, 0, 0, lebar, tinggi);
 
-  gambarBaru = kameraCanvas.toDataURL("image/jpeg", 0.7);
-  previewGambar.src = gambarBaru;
+  const hasilFoto = kameraCanvas.toDataURL("image/jpeg", 0.7);
+  gambarData.value = hasilFoto;
+  previewGambar.src = hasilFoto;
   previewGambar.hidden = false;
 
   matikanKamera();
@@ -266,12 +110,19 @@ function mintaIzinNotifikasi(){
   }
 }
 
+function tandaiSudahNotif(id){
+  const data = new FormData();
+  data.append("aksi", "notif");
+  data.append("id", id);
+  fetch("actions.php", { method: "POST", body: data });
+}
+
 function kirimNotifikasi(todo){
   if (!("serviceWorker" in navigator)) return;
 
   let isi = "Waktunya mengerjakan todo ini.";
   if (todo.deadline !== ""){
-    isi = "Deadline: " + formatTanggal(todo.deadline);
+    isi = "Deadline: " + todo.deadline;
   }
 
   navigator.serviceWorker.ready.then(function (registration){
@@ -284,12 +135,12 @@ function cekNotifikasi(){
 
   const sekarang = new Date();
 
-  todos.forEach(function (todo){
-    if (todo.notifikasi === "" || todo.sudahNotif || todo.selesai) return;
+  dataNotifikasi.forEach(function (todo){
+    if (todo.sudahNotif) return;
 
     if (new Date(todo.notifikasi) <= sekarang){
       todo.sudahNotif = true;
-      simpanKeDB(todo);
+      tandaiSudahNotif(todo.id);
       kirimNotifikasi(todo);
     }
   });
@@ -309,37 +160,28 @@ async function daftarServiceWorker(){
   }
 }
 
+newNotifikasi.addEventListener("change", mintaIzinNotifikasi);
+detailNotifikasi.addEventListener("change", mintaIzinNotifikasi);
+
 formTambah.addEventListener("submit", function (e){
-  e.preventDefault();
-
-  const judul = newJudul.value.trim();
-  const deskripsi = newDeskripsi.value.trim();
-  const deadline = newDeadline.value;
-  const notifikasi = newNotifikasi.value;
-
-  if (judul === ""){
+  if (newJudul.value.trim() === ""){
+    e.preventDefault();
     alert("Judul tidak boleh kosong!");
     newJudul.focus();
     return;
   }
 
-  const todoBaru = { id: nextId, judul: judul, deskripsi: deskripsi, deadline: deadline, selesai: false, gambar: gambarBaru, notifikasi: notifikasi, sudahNotif: false };
-  todos.push(todoBaru);
-  simpanKeDB(todoBaru);
-  selectedId = nextId;
-  nextId++;
-
-  if (notifikasi !== ""){
-    mintaIzinNotifikasi();
+  const namaPembuat = document.getElementById("new-dibuat-oleh");
+  if (namaPembuat && namaPembuat.value.trim() === ""){
+    e.preventDefault();
+    alert("Nama pembuat tidak boleh kosong untuk todo Shared!");
+    namaPembuat.focus();
+    return;
   }
 
-  formTambah.reset();
-  gambarBaru = "";
-  previewGambar.hidden = true;
-  matikanKamera();
-  pesan.textContent = "";
-  tampilkanList();
-  tampilkanDetail();
+  if (newNotifikasi.value !== ""){
+    mintaIzinNotifikasi();
+  }
 });
 
 btnEdit.addEventListener("click", function (){
@@ -348,48 +190,25 @@ btnEdit.addEventListener("click", function (){
 });
 
 formDetail.addEventListener("submit", function (e){
-  e.preventDefault();
-
-  const todo = getTodoTerpilih();
-  const judul = detailJudul.value.trim();
-
-  if (judul === ""){
+  if (detailJudul.value.trim() === ""){
+    e.preventDefault();
     alert("Judul tidak boleh kosong!");
     detailJudul.focus();
     return;
   }
 
-  if (todo.notifikasi !== detailNotifikasi.value){
-    todo.sudahNotif = false;
+  const namaPembuat = document.getElementById("detail-dibuat-oleh");
+  if (namaPembuat && namaPembuat.value.trim() === ""){
+    e.preventDefault();
+    alert("Nama pembuat tidak boleh kosong untuk todo Shared!");
+    namaPembuat.focus();
   }
-
-  todo.judul = judul;
-  todo.deskripsi = detailDeskripsi.value.trim();
-  todo.deadline = detailDeadline.value;
-  todo.notifikasi = detailNotifikasi.value;
-  todo.selesai = detailStatus.value === "completed";
-  simpanKeDB(todo);
-
-  if (todo.notifikasi !== ""){
-    mintaIzinNotifikasi();
-  }
-
-  tampilkanList();
-  tampilkanDetail();
-  btnEdit.focus();
 });
 
-btnHapus.addEventListener("click", function (){
-  if (!confirm("Yakin ingin menghapus todo ini?")) return;
-
-  hapusDariDB(selectedId);
-  todos = todos.filter(function (todo){
-    return todo.id !== selectedId;
-  });
-  selectedId = todos.length > 0 ? todos[0].id : null;
-
-  tampilkanList();
-  tampilkanDetail();
+formHapus.addEventListener("submit", function (e){
+  if (!confirm("Yakin ingin menghapus todo ini?")){
+    e.preventDefault();
+  }
 });
 
 btnTema.addEventListener("click", function (){
@@ -409,21 +228,6 @@ if (localStorage.getItem("tema") === "dark"){
   btnTema.textContent = "Mode Terang";
 }
 
-bukaDatabase(function (){
-  ambilSemuaTodo(function (hasil){
-    todos = hasil;
-    todos.forEach(function (todo){
-      if (todo.id >= nextId){
-        nextId = todo.id + 1;
-      }
-    });
-    selectedId = todos.length > 0 ? todos[0].id : null;
-
-    tampilkanList();
-    tampilkanDetail();
-    cekNotifikasi();
-  });
-});
-
 daftarServiceWorker();
+cekNotifikasi();
 setInterval(cekNotifikasi, 10000);

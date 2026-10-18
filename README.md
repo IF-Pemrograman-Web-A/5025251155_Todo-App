@@ -5,121 +5,139 @@
     Kelas   : Pemrograman Web (A)
 
 ## Deskripsi Singkat
-- Header terdiri judul My Todo List dan deskripsi singkat. 
-- Panel kiri terdiri dari daftar todo, status todo, dan form add new todo. 
-- Panel kanan berisi detail todo yang dipilih, terdiri dari judul, deskripsi, status, serta tombol simpan, edit dan hapus. 
-- Footer berisi tahun dan nama pembuat. 
-- Terdapat daftar todo dengan status pending atau completed.
-- Terdapat form untuk menambahkan todo baru yang berisi judul, deskripsi, deadline todo, waktu notifikasi, dan ambil foto.
-- Terdapat bagian detail untuk melihat detail, mengedit atau menghapus todo yang dipilih.
-- Terdapat tombol Mode Gelap/Terang untuk menyesuaikan tema.
+Todo App dikembangkan dan merupakan lanjutan dari E03 menjadi aplikasi PHP dengan database MySQL
+
+- Header berisi judul My Todo List, deskripsi singkat, dan tombol Mode Gelap/Terang.
+- Menu bar dengan dua menu yaitu  Personal dan Shared.
+- Panel kiri berisi daftar todo, status todo, dan form Add New Todo seperti judul, deskripsi, deadline, waktu notifikasi dan foto kamera.
+- Panel kanan berisi detail todo yang dipilih, dengan tombol Simpan, Edit, dan Hapus.
+- Footer berisi tahun dan nama pembuat.
+- Data todo disimpan di database MySQL dan dikelola dengan PHP (PDO).
+
+## Struktur File
+| File | Fungsi |
+|---|---|
+| index.php | Halaman utama, mengambil data todo dari database sesuai menu |
+| config.php | Koneksi database (PDO) dan fungsi bantu |
+| menu-bar.php | Menu Personal dan Shared |
+| content.php | Daftar todo, form tambah, dan detail todo |
+| actions.php | Proses Create, Update, Delete (prepared statement) dan penyimpanan foto |
+| data.sql | Struktur tabel dan data dummy |
+| script.js, style.css, sw.js | JavaScript, CSS, dan Service Worker dari E03 |
+| uploads/ | Folder penyimpanan foto dari kamera |
+
+## Aturan Personal dan Shared
+- Tabel todos memiliki kolom jenis menu personal atau shared. Setiap menu hanya menampilkan todo sesuai jenisnya.
+- Todo Shared memiliki kolom tambahan "Dibuat oleh" yang wajib diisi dan ditampilkan di daftar serta detail.
+- Aplikasi tidak memakai login, jadi semua pengunjung melihat dan dapat mengubah data yang sama.
 
 
-## Dokumentasi dan Preview E03
+## Dokumentasi dan Preview E04
+
 ### Tampilan Awal
-- Halaman utama Mode Terang
-![Tampilan Awal Mode Terang](assetsE03/tampilan_awal_terang.png)
-- Halaman utama Mode Gelap
-![Tampilan Awal Mode Terang](assetsE03/tampilan_awal_gelap.png)
-- Halaman utama pada mobile
-![Tampilan mobile](assetsE03/tampilan_awal_mobile.png)
+- Halaman Personal mode terang
+![Personal terang](assetsE04/tampilan/personal_terang.png)
+- Halaman Personal mode gelap
+![Personal gelap](assetsE04/tampilan/personal_gelap.png)
+- Halaman Shared
+![Shared](assetsE04/tampilan/shared_terang.png)
+- Tampilan pada mobile
+![Mobile](assetsE04/tampilan/mobile.png)
 
 
-### Web Storage
-
-- Key tema di localStorage
-![localStorage](assetsE03/webstorage/localstorage.png)
-
-- Mode gelap setelah refresh
-![tema setelah refresh](assetsE03/webstorage/after_refresh.png)
-
-- Data todo di IndexedDB
-![indexeddb](assetsE03/webstorage/indexdb.png)
-
-- Isi db saat ada todo yang di hapus
-![indexdb setelah data di hapus](assetsE03/webstorage/hapus_todo_indb.png)
-
-- Isi db setelah menambah todo abru
-![new todo](assetsE03/webstorage/todo_baru.png)
+### 1. Menu Personal dan Shared
+- Menu Personal aktif, terlihat alamat ?menu=personal
+![menu personal](assetsE04/menu/personal.png)
+- Menu Shared aktif, terlihat alamat ?menu=shared dan field "Dibuat oleh"
+![menu shared](assetsE04/menu/shared.png)
+- Menu dapat dijangkau dengan keyboard dan menu aktif ditandai
+![menu keyboard](assetsE04/menu/fokus_keyboard.png)
 
 
-### Media Capture API
-
-- Perizinan Kamera
-![izin kamera](assetsE03/mediacapture/izin.png)
-
-- Kamera aktif
-![kamera aktif](assetsE03/mediacapture/cam_aktif.png)
-
-- Preview Foto
-![preview](assetsE03/mediacapture/preview.png)
-
-- Tampilan pada panel/detail todo
-![detail](assetsE03/mediacapture/in_panel.png)
-
+### 2. Migrasi ke PHP dan Modular
+- Struktur folder proyek
+![struktur folder](assetsE04/modular/struktur_folder.png)
+- index.php memanggil menu-bar.php dan content.php dengan include
+![include](assetsE04/modular/include_index.png)
+![include](assetsE04/modular/include_index2.png)
+- Isi config.php (koneksi PDO)
+![config](assetsE04/modular/config.png)
+- Aplikasi dibuka melalui localhost (.php) dan page source hanya berisi HTML hasil proses PHP
+![page source](assetsE04/modular/page_source.png)
+- XAMPP Control Panel dengan Apache dan MySQL berjalan
+![xampp](assetsE04/modular/xampp.png)
 
 
-
-### Service Worker
-
-- Service worker active
-![sw active](assetsE03/serviceworkers/sw.png)
-
-- Service worker sukses di console
-![sw console](assetsE03/serviceworkers/sw_succede.png)
-
-- Mengisi waktu notifikasi pada form
-![isi waktu](assetsE03/serviceworkers/isi_waktu.png)
-
-- Tampilan notifikasi Pengingat
-![muncul notifikasi](assetsE03/serviceworkers/muncul_notif.png)
+### 3. Database dan data.sql
+- Proses impor data.sql di phpMyAdmin
+![import](assetsE04/database/import.png)
+- Hasil impor berhasil
+![import sukses](assetsE04/database/import_sukses.png)
+- Struktur tabel todos
+![struktur tabel](assetsE04/database/struktur_tabel.png)
+- Data dummy di tabel todos (4 personal dan 3 shared)
+![data dummy](assetsE04/database/data_dummy.png)
+- Data dummy tampil di aplikasi (Personal dan Shared)
+![dummy personal](assetsE04/database/dummy_personal.png)
+![dummy shared](assetsE04/database/dummy_shared.png)
 
 
-### Accessibility
-- Skip Link pada pojok kiri atas 
-![skip link](assetsE03/accessibility/skip_link.png)
-  Setelah menekan enter, fokus pada konten utama
-  ![main content](assetsE03/accessibility/fokus_konten_utama.png)
+### 4. CRUD
+#### Create
+- Form tambah todo terisi
+![form tambah](assetsE04/crud/create_form.png)
+- Todo baru muncul di daftar
+![create app](assetsE04/crud/create_app.png)
+- Baris baru muncul di tabel phpMyAdmin
+![create db](assetsE04/crud/create_db.png)
+- Todo Shared baru dengan nama pembuat
+![create shared](assetsE04/crud/create_shared.png)
+- Validasi judul kosong
+![validasi judul](assetsE04/crud/validasi_judul.png)
+- Validasi nama pembuat kosong pada Shared
+![validasi nama](assetsE04/crud/validasi_nama.png)
 
-- Focus state pada item todo atau tombol saat navigasi keyboard, dimulai dari mode tampilan, kemudian ke form todo dan seterusnya.
-![focus state1](assetsE03/accessibility/focus_state1.png)
-![focus state2](assetsE03/accessibility/fokus_state2.png)
+#### Read
+- Data tetap tampil setelah halaman direfresh
+![read refresh](assetsE04/crud/read_refresh.png)
+- Detail todo muncul saat todo dipilih
+![read detail](assetsE04/crud/read_detail.png)
 
-- Memilih todo dengan navogasi keyboard dan menekan enter
-![todo melalui navigasi](assetsE03/accessibility/select_todo.png)
+#### Update
+- Mode edit aktif (field detail dapat diubah)
+![update edit](assetsE04/crud/update_edit.png)
+- Hasil perubahan di aplikasi
+![update app](assetsE04/crud/update_app.png)
+- Hasil perubahan di phpMyAdmin
+![update db](assetsE04/crud/update_db.png)
+- Mengubah status lewat checkbox (Pending menjadi Completed)
+![update checkbox](assetsE04/crud/update_checkbox.png)
+- Kolom selesai berubah di phpMyAdmin
+![update checkbox db](assetsE04/crud/update_checkbox_db.png)
 
-- Accessibility Tree
+#### Delete
+- Konfirmasi hapus
+![konfirmasi hapus](assetsE04/crud/delete_konfirmasi.png)
+- Todo hilang dari daftar
+![delete app](assetsE04/crud/delete_app.png)
+- Baris hilang dari tabel phpMyAdmin
+![delete db](assetsE04/crud/delete_db.png)
 
-  Contoh pengecekan accessibility pada element checkbox
-  ![checkbox accesibility](assetsE03/accessibility/accs_checkbox.png)
-
-  Contoh pengecekan accessibility pada element input judul
-  ![input judul](assetsE03/accessibility/accs_input_judul.png)
-
-
-
-### 5. Accessibility Best Practices
-
-#### Contrast
-Beberapa contoh nya
-- Teks utama mode terang
-![teks utama light mode](assetsE03/best%20practice/c_text.png)
-
-- Teks utama mode gelap
-![teks utama dark mode](assetsE03/best%20practice/c_teksutama_dark.png)
-
-- Tombol simpan
-![simpan](assetsE03/best%20practice/c_simpan.png)
-
-- Footer
-![footer](assetsE03/best%20practice/c_footer.png)
-
-
-### Lighthouse
-- Skor saat pengecekan, nilainya cukup tinggi karena halaman ini kecil dan sederhana, sehingga semua audit otomatis Lighthouse seperti label, alt, kontras, lang lulus
-![lighthouse](assetsE03/best%20practice/lighthouse.png)
-
-
-
+#### Keamanan Query
+- Query memakai prepared statement (prepare dan execute) di actions.php
+![prepared statement](assetsE04/crud/prepared_statement.png)
 
 
+### 5. File Handling
+- Perizinan dan kamera aktif
+![kamera](assetsE04/filehandling/kamera.png)
+- Preview foto pada form
+![preview](assetsE04/filehandling/preview.png)
+- Foto tampil pada detail todo
+![detail foto](assetsE04/filehandling/detail_foto.png)
+- File foto tersimpan di folder uploads/
+![folder uploads](assetsE04/filehandling/folder_uploads.png)
+- Nama file foto tersimpan di kolom gambar
+![kolom gambar](assetsE04/filehandling/kolom_gambar.png)
+- Setelah todo dihapus lewat aplikasi, file foto ikut terhapus dari uploads/
+![hapus foto](assetsE04/filehandling/hapus_foto.png)

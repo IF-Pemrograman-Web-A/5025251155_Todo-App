@@ -368,3 +368,68 @@ body.dark .btn-tema{
   color: #000;
   border-color: #fff;
 }
+/*menu bar (E04)*/
+.menu-bar{
+  background-color: #fcfbfb;
+  border-bottom: 1px solid #dbd9d9;
+}
+
+.menu-bar ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.menu-bar a{
+  display: inline-block;
+  padding: 10px 24px;
+  font-size: 0.9375rem;
+  color: #2d2d5d;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+}
+
+.menu-bar a:hover{
+  background-color: #efeeee;
+}
+
+.menu-bar a[aria-current="page"]{
+  font-weight: bold;
+  border-bottom-color: #323265;
+}
+
+.todo-judul a{
+  color: inherit;
+  text-decoration: none;
+}
+
+.todo-judul a:hover{
+  text-decoration: underline;
+}
+
+.form-selesai{
+  margin: 0;
+}
+
+#form-hapus{
+  margin: 0;
+}
+
+body.dark .menu-bar{
+  background-color: #2a2a3c;
+  border-color: #444;
+}
+
+body.dark .menu-bar a{
+  color: #b8b8ff;
+}
+
+body.dark .menu-bar a:hover{
+  background-color: #3a3a4c;
+}
+
+body.dark .menu-bar a[aria-current="page"]{
+  border-bottom-color: #8888d0;
+}
