@@ -50,7 +50,6 @@ Beberapa hal yang ditambahkan pada E05 antara lain:
 - Pada tab Network, halaman index.php?menu=personal ditangani oleh Service Worker dan ditampilkan sebagai ServiceWorker pada kolom Size. File style.css juga tetap berhasil dimuat.Request berwarna merah dengan tipe fetch dan initiator sw.js menunjukkan permintaan jaringan yang gagal karena koneksi terputus. Service Worker kemudian menampilkan halaman offline dari cache. Sementara itu, script.js tidak diminta oleh halaman offline, tetapi sudah tersimpan di Cache Storage.
 ![network offline](assetsE05/offline/network_offline.png)
 - Menambah atau mencentang todo saat offline ditolak dengan pesan peringatan
-![peringatan offline](assetsE05/offline/peringatan_offline1.png)
-![peringatan offline](assetsE05/offline/peringatan_offline2.png)
-- Setelah online kembali dan tombol Coba Lagi ditekan, halaman todo tampil normal. Todo yang sebelumnya ditambahkan pada saat offline sudah masuk ke daftar todo list saat setelah kembali online.
+![peringatan offline](assetsE05/offline/peringatan_offline.png)
+- Setelah online kembali dan tombol Coba Lagi ditekan, halaman todo tampil normal.
 ![kembali online](assetsE05/offline/kembali_online.png)
