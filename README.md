@@ -51,5 +51,5 @@ Beberapa hal yang ditambahkan pada E05 antara lain:
 ![network offline](assetsE05/offline/network_offline.png)
 - Menambah atau mencentang todo saat offline ditolak dengan pesan peringatan
 ![peringatan offline](assetsE05/offline/peringatan_offline.png)
-- Setelah online kembali dan tombol Coba Lagi ditekan, halaman todo tampil normal.
+- Setelah online kembali dan tombol submit ditekan, halaman todo tampil normal dan todo yang sebelumnya masuk ke list tood.
 ![kembali online](assetsE05/offline/kembali_online.png)
