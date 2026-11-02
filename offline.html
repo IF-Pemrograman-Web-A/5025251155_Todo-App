@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#323265">
+  <title>Offline - My Todo List</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>My Todo List</h1>
+    <p>Tidak perlu melihat seluruh anak tangga, cukup ambil langkah pertama saja.</p>
+  </header>
+
+  <main class="main-content" id="main-content">
+    <section class="panel panel-detail" aria-labelledby="judul-offline">
+      <h2 id="judul-offline">Kamu Sedang Offline</h2>
+      <p>Koneksi internet terputus, jadi daftar todo belum bisa dimuat. Data Personal dan Shared disimpan di server, sehingga butuh koneksi untuk dilihat atau diubah.</p>
+      <p class="teks-kecil">Sambungkan kembali internet, lalu tekan tombol di bawah.</p>
+      <p></p>
+      <button type="button" class="btn btn-utama" id="btn-coba">Coba Lagi</button>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Todo App PWA 2026</p>
+    <p>Wanhardo Jawak</p>
+  </footer>
+
+  <script>
+    if (localStorage.getItem("tema") === "dark"){
+      document.body.classList.add("dark");
+    }
+    document.getElementById("btn-coba").addEventListener("click", function (){
+      location.reload();
+    });
+  </script>
+</body>
+</html>

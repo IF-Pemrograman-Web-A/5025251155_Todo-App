@@ -45,6 +45,10 @@ foreach ($stmt->fetchAll() as $r){
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Todo List</title>
+  <meta name="theme-color" content="#323265">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-uk-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/icon-uk-192.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -53,6 +57,7 @@ foreach ($stmt->fetchAll() as $r){
   <header class="site-header">
     <h1>My Todo List</h1>
     <p>Tidak perlu melihat seluruh anak tangga, cukup ambil langkah pertama saja.</p>
+    <button type="button" class="btn btn-install" id="btn-install" hidden>Install Aplikasi</button>
     <button type="button" class="btn btn-tema">Mode Gelap</button>
   </header>
 

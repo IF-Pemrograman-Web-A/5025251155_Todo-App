@@ -433,3 +433,27 @@ body.dark .menu-bar a:hover{
 body.dark .menu-bar a[aria-current="page"]{
   border-bottom-color: #8888d0;
 }
+
+/*install button*/
+.btn-install{
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background-color: #323265;
+  color: #f5f3f3;
+  border-color: #303063;
+}
+
+@media (max-width: 768px){
+  .btn-install{
+    position: static;
+    margin-top: 10px;
+    margin-right: 8px;
+  }
+}
+
+body.dark .btn-install{
+  background-color: #5555a0;
+  color: #fff;
+  border-color: #7777c0;
+}

@@ -228,6 +228,48 @@ if (localStorage.getItem("tema") === "dark"){
   btnTema.textContent = "Mode Terang";
 }
 
+const btnInstall = document.getElementById("btn-install");
+let promptInstall = null;
+
+function sedangOffline(){
+  if (navigator.onLine) return false;
+  alert("Kamu sedang offline, perubahan belum bisa disimpan. Sambungkan internet lalu coba lagi.");
+  return true;
+}
+
+document.addEventListener("submit", function (e){
+  if (sedangOffline()){
+    e.preventDefault();
+    e.stopPropagation();
+  }
+}, true);
+
+document.addEventListener("change", function (e){
+  if (e.target.matches(".form-selesai input[type='checkbox']") && sedangOffline()){
+    e.target.checked = !e.target.checked;
+    e.stopPropagation();
+  }
+}, true);
+
+window.addEventListener("beforeinstallprompt", function (e){
+  e.preventDefault();
+  promptInstall = e;
+  btnInstall.hidden = false;
+});
+
+btnInstall.addEventListener("click", async function (){
+  if (!promptInstall) return;
+  await promptInstall.prompt();
+  promptInstall = null;
+  btnInstall.hidden = true;
+});
+
+window.addEventListener("appinstalled", function (){
+  promptInstall = null;
+  btnInstall.hidden = true;
+});
+
+
 daftarServiceWorker();
 cekNotifikasi();
 setInterval(cekNotifikasi, 10000);
