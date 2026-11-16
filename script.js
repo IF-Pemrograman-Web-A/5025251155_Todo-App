@@ -1,8 +1,25 @@
-const dataNotifikasi = JSON.parse(document.getElementById("data-notifikasi").textContent);
+const dataApp = JSON.parse(document.getElementById("data-app").textContent);
+const menu = dataApp.menu;
+const urlApi = "api.php/todos";
+
+let dataNotifikasi = [];
+let daftarTodo = [];
+let idTerpilih = 0;
 let streamKamera = null;
+
+const daftarPesan = {
+  ditambah: "Todo berhasil ditambahkan.",
+  disimpan: "Perubahan berhasil disimpan.",
+  dihapus: "Todo berhasil dihapus."
+};
+
+const todoList = document.getElementById("todo-list");
+const pesanServer = document.getElementById("pesan-server");
 
 const formTambah = document.querySelector(".new-todo-form form");
 const newJudul = document.getElementById("new-judul");
+const newDeskripsi = document.getElementById("new-deskripsi");
+const newDeadline = document.getElementById("new-deadline");
 const newNotifikasi = document.getElementById("new-notifikasi");
 const gambarData = document.getElementById("gambar-data");
 
@@ -14,13 +31,59 @@ const btnFoto = document.getElementById("btn-foto");
 const pesan = document.getElementById("pesan");
 
 const formDetail = document.querySelector(".detail-form");
-const formHapus = document.getElementById("form-hapus");
 const fieldDetail = formDetail.querySelectorAll(".field-detail");
 const detailJudul = document.getElementById("detail-judul");
+const detailDeskripsi = document.getElementById("detail-deskripsi");
+const detailDeadline = document.getElementById("detail-deadline");
 const detailNotifikasi = document.getElementById("detail-notifikasi");
+const detailStatus = document.getElementById("detail-status");
+const detailGambar = document.getElementById("detail-gambar");
+const detailGambarKosong = document.getElementById("detail-gambar-kosong");
 const btnSimpan = document.querySelector(".detail-form .btn-utama");
 const btnEdit = document.querySelector(".btn-edit");
+const btnHapus = document.querySelector(".btn-hapus");
 const btnTema = document.querySelector(".btn-tema");
+
+async function panggilApi(path, method, body){
+  const opsi = { method: method, headers: { "X-API-Key": dataApp.apiKey } };
+  if (body !== undefined){
+    opsi.headers["Content-Type"] = "application/json";
+    opsi.body = JSON.stringify(body);
+  }
+
+  const response = await fetch(urlApi + path, opsi);
+  let hasil = null;
+  if (response.status !== 204){
+    hasil = await response.json().catch(function (){
+      return null;
+    });
+  }
+  return { ok: response.ok, status: response.status, hasil: hasil };
+}
+
+function teksError(res){
+  if (res.hasil && res.hasil.errors){
+    return Object.values(res.hasil.errors)[0];
+  }
+  if (res.hasil && res.hasil.message){
+    return res.hasil.message;
+  }
+  return "Terjadi kesalahan pada server (status " + res.status + ").";
+}
+
+const teksGagalTerhubung = "Tidak bisa terhubung ke server. Periksa koneksi internet.";
+
+function formatTanggal(tanggal){
+  const bagian = tanggal.split("-");
+  return bagian[2] + "/" + bagian[1] + "/" + bagian[0];
+}
+
+function buat(tag, kelas, teks){
+  const el = document.createElement(tag);
+  if (kelas) el.className = kelas;
+  if (teks !== undefined) el.textContent = teks;
+  return el;
+}
 
 function setEdit(boleh){
   fieldDetail.forEach(function (field){
@@ -31,23 +94,169 @@ function setEdit(boleh){
 
 setEdit(false);
 
-document.querySelectorAll(".todo-item").forEach(function (item){
+function buatItem(t){
+  const aktif = t.id === idTerpilih;
+  const item = buat("li", "todo-item" + (aktif ? " aktif" : ""));
+  if (aktif) item.setAttribute("aria-current", "true");
+
+  const info = buat("div", "todo-info");
+
+  const form = buat("form", "form-selesai");
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.id = "cb-" + t.id;
+  checkbox.checked = t.selesai;
+  checkbox.setAttribute("aria-label", "Tandai selesai: " + t.judul);
+  checkbox.addEventListener("change", function (){
+    ubahSelesai(t, checkbox);
+  });
+  form.appendChild(checkbox);
+  info.appendChild(form);
+
+  const judul = buat("span", "todo-judul" + (t.selesai ? " selesai" : ""));
+  const link = buat("a", "", t.judul);
+  link.href = "index.php?menu=" + menu + "&id=" + t.id;
+  judul.appendChild(link);
+  info.appendChild(judul);
+
+  if (t.selesai){
+    info.appendChild(buat("span", "status status-completed", "Completed"));
+  } else {
+    info.appendChild(buat("span", "status status-pending", "Pending"));
+  }
+  item.appendChild(info);
+
+  if (t.deadline){
+    item.appendChild(buat("div", "todo-deadline", "Deadline: " + formatTanggal(t.deadline)));
+  }
+  if (menu === "shared" && t.dibuat_oleh !== ""){
+    item.appendChild(buat("div", "todo-deadline", "Dibuat oleh: " + t.dibuat_oleh));
+  }
+
   item.addEventListener("click", function (e){
     if (e.target.closest("a") || e.target.closest("form")) return;
-    const link = item.querySelector("a");
-    if (link) window.location.href = link.href;
+    window.location.href = link.href;
   });
-});
 
-document.querySelectorAll(".form-selesai input[type='checkbox']").forEach(function (checkbox){
-  checkbox.addEventListener("change", function (){
-    checkbox.form.submit();
+  return item;
+}
+
+function renderList(){
+  todoList.textContent = "";
+
+  if (daftarTodo.length === 0){
+    todoList.appendChild(buat("li", "teks-kecil", "Belum ada todo."));
+    return;
+  }
+
+  daftarTodo.forEach(function (t){
+    todoList.appendChild(buatItem(t));
   });
-});
+}
 
-if (location.hash.indexOf("#cb-") === 0){
-  const checkbox = document.querySelector(location.hash);
-  if (checkbox) checkbox.focus();
+function tampilGagalMuat(teks){
+  todoList.textContent = "";
+  todoList.appendChild(buat("li", "teks-kecil", teks));
+}
+
+function isiDetail(todo){
+  detailJudul.value = todo.judul;
+  detailDeskripsi.value = todo.deskripsi || "";
+  detailDeadline.value = todo.deadline || "";
+  detailNotifikasi.value = todo.notifikasi ? todo.notifikasi.slice(0, 16) : "";
+  detailStatus.value = todo.selesai ? "completed" : "pending";
+
+  const dibuatOleh = document.getElementById("detail-dibuat-oleh");
+  if (dibuatOleh) dibuatOleh.value = todo.dibuat_oleh;
+
+  if (todo.gambar !== ""){
+    detailGambar.src = "uploads/" + todo.gambar;
+    detailGambar.alt = "Gambar untuk todo " + todo.judul;
+    detailGambar.hidden = false;
+    detailGambarKosong.hidden = true;
+  } else {
+    detailGambar.hidden = true;
+    detailGambarKosong.hidden = false;
+  }
+
+  btnEdit.disabled = false;
+  btnHapus.disabled = false;
+}
+
+async function muatData(){
+  try {
+    const res = await panggilApi("?jenis=" + menu, "GET");
+    if (!res.ok){
+      tampilGagalMuat(teksError(res));
+      return;
+    }
+    daftarTodo = res.hasil.data;
+
+    let todo = daftarTodo.length > 0 ? daftarTodo[0] : null;
+    daftarTodo.forEach(function (t){
+      if (t.id === dataApp.id) todo = t;
+    });
+    idTerpilih = todo ? todo.id : 0;
+    renderList();
+
+    if (todo){
+      const detail = await panggilApi("/" + idTerpilih, "GET");
+      if (!detail.ok){
+        pesanServer.textContent = teksError(detail);
+        return;
+      }
+      isiDetail(detail.hasil.data);
+    }
+  } catch (error){
+    tampilGagalMuat("Data todo tidak bisa dimuat. Periksa koneksi internet lalu muat ulang halaman.");
+  }
+}
+
+async function muatNotifikasi(){
+  try {
+    const res = await panggilApi("?notifikasi=belum", "GET");
+    if (!res.ok) return;
+
+    dataNotifikasi = res.hasil.data.map(function (t){
+      return {
+        id: t.id,
+        judul: t.judul,
+        deadline: t.deadline ? formatTanggal(t.deadline) : "",
+        notifikasi: t.notifikasi,
+        sudahNotif: false
+      };
+    });
+    cekNotifikasi();
+  } catch (error){
+    console.error("Data notifikasi gagal dimuat:", error);
+  }
+}
+
+async function ubahSelesai(t, checkbox){
+  pesanServer.textContent = "";
+
+  let res;
+  try {
+    res = await panggilApi("/" + t.id, "PATCH", { selesai: checkbox.checked });
+  } catch (error){
+    checkbox.checked = !checkbox.checked;
+    pesanServer.textContent = teksGagalTerhubung;
+    return;
+  }
+
+  if (!res.ok){
+    checkbox.checked = !checkbox.checked;
+    pesanServer.textContent = teksError(res);
+    return;
+  }
+
+  t.selesai = res.hasil.data.selesai;
+  renderList();
+  if (t.id === idTerpilih){
+    isiDetail(res.hasil.data);
+    setEdit(false);
+  }
+  document.getElementById("cb-" + t.id).focus();
 }
 
 function matikanKamera(){
@@ -111,10 +320,9 @@ function mintaIzinNotifikasi(){
 }
 
 function tandaiSudahNotif(id){
-  const data = new FormData();
-  data.append("aksi", "notif");
-  data.append("id", id);
-  fetch("actions.php", { method: "POST", body: data });
+  panggilApi("/" + id, "PATCH", { sudah_notif: true }).catch(function (error){
+    console.error("Gagal menandai notifikasi:", error);
+  });
 }
 
 function kirimNotifikasi(todo){
@@ -163,9 +371,10 @@ async function daftarServiceWorker(){
 newNotifikasi.addEventListener("change", mintaIzinNotifikasi);
 detailNotifikasi.addEventListener("change", mintaIzinNotifikasi);
 
-formTambah.addEventListener("submit", function (e){
+formTambah.addEventListener("submit", async function (e){
+  e.preventDefault();
+
   if (newJudul.value.trim() === ""){
-    e.preventDefault();
     alert("Judul tidak boleh kosong!");
     newJudul.focus();
     return;
@@ -173,7 +382,6 @@ formTambah.addEventListener("submit", function (e){
 
   const namaPembuat = document.getElementById("new-dibuat-oleh");
   if (namaPembuat && namaPembuat.value.trim() === ""){
-    e.preventDefault();
     alert("Nama pembuat tidak boleh kosong untuk todo Shared!");
     namaPembuat.focus();
     return;
@@ -182,6 +390,29 @@ formTambah.addEventListener("submit", function (e){
   if (newNotifikasi.value !== ""){
     mintaIzinNotifikasi();
   }
+
+  const data = {
+    jenis: menu,
+    judul: newJudul.value,
+    deskripsi: newDeskripsi.value,
+    deadline: newDeadline.value,
+    notifikasi: newNotifikasi.value,
+    gambar_data: gambarData.value
+  };
+  if (namaPembuat) data.dibuat_oleh = namaPembuat.value;
+
+  pesanServer.textContent = "";
+
+  try {
+    const res = await panggilApi("", "POST", data);
+    if (!res.ok){
+      pesanServer.textContent = teksError(res);
+      return;
+    }
+    window.location.href = "index.php?menu=" + menu + "&id=" + res.hasil.data.id + "&pesan=ditambah";
+  } catch (error){
+    pesanServer.textContent = teksGagalTerhubung;
+  }
 });
 
 btnEdit.addEventListener("click", function (){
@@ -189,9 +420,10 @@ btnEdit.addEventListener("click", function (){
   detailJudul.focus();
 });
 
-formDetail.addEventListener("submit", function (e){
+formDetail.addEventListener("submit", async function (e){
+  e.preventDefault();
+
   if (detailJudul.value.trim() === ""){
-    e.preventDefault();
     alert("Judul tidak boleh kosong!");
     detailJudul.focus();
     return;
@@ -199,15 +431,49 @@ formDetail.addEventListener("submit", function (e){
 
   const namaPembuat = document.getElementById("detail-dibuat-oleh");
   if (namaPembuat && namaPembuat.value.trim() === ""){
-    e.preventDefault();
     alert("Nama pembuat tidak boleh kosong untuk todo Shared!");
     namaPembuat.focus();
+    return;
+  }
+
+  const data = {
+    judul: detailJudul.value,
+    deskripsi: detailDeskripsi.value,
+    deadline: detailDeadline.value,
+    notifikasi: detailNotifikasi.value,
+    selesai: detailStatus.value === "completed"
+  };
+  if (namaPembuat) data.dibuat_oleh = namaPembuat.value;
+
+  pesanServer.textContent = "";
+
+  try {
+    const res = await panggilApi("/" + idTerpilih, "PUT", data);
+    if (!res.ok){
+      pesanServer.textContent = teksError(res);
+      return;
+    }
+    window.location.href = "index.php?menu=" + menu + "&id=" + idTerpilih + "&pesan=disimpan";
+  } catch (error){
+    pesanServer.textContent = teksGagalTerhubung;
   }
 });
 
-formHapus.addEventListener("submit", function (e){
-  if (!confirm("Yakin ingin menghapus todo ini?")){
-    e.preventDefault();
+btnHapus.addEventListener("click", async function (){
+  if (sedangOffline()) return;
+  if (!confirm("Yakin ingin menghapus todo ini?")) return;
+
+  pesanServer.textContent = "";
+
+  try {
+    const res = await panggilApi("/" + idTerpilih, "DELETE");
+    if (!res.ok){
+      pesanServer.textContent = teksError(res);
+      return;
+    }
+    window.location.href = "index.php?menu=" + menu + "&pesan=dihapus";
+  } catch (error){
+    pesanServer.textContent = teksGagalTerhubung;
   }
 });
 
@@ -270,6 +536,12 @@ window.addEventListener("appinstalled", function (){
 });
 
 
+const kodePesan = new URLSearchParams(location.search).get("pesan");
+if (kodePesan && daftarPesan.hasOwnProperty(kodePesan)){
+  pesanServer.textContent = daftarPesan[kodePesan];
+}
+
 daftarServiceWorker();
-cekNotifikasi();
+muatData();
+muatNotifikasi();
 setInterval(cekNotifikasi, 10000);

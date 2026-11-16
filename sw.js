@@ -1,4 +1,4 @@
-const namaCache = "todo-app-v1";
+const namaCache = "todo-app-v2";
 const daftarShell = [
   "./offline.html",
   "./style.css",
@@ -49,7 +49,8 @@ self.addEventListener("fetch", function (event){
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-
+  if (url.pathname.includes("/api.php")) return;
+  
   if (request.mode === "navigate"){
     event.respondWith(networkFirst(request));
     return;

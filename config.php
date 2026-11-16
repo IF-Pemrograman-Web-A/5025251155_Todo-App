@@ -3,6 +3,7 @@ $host = "localhost";
 $user = "root";
 $pass = "";
 $dbname = "todo_app";
+$apiKey = "todo-e06-7f3a9c21d4b8";
 
 try {
   $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $pass);
@@ -12,6 +13,10 @@ try {
 } catch (PDOException $e) {
   error_log("Koneksi database gagal: " . $e->getMessage());
   http_response_code(500);
+  if (defined("API_MODE")){
+    header("Content-Type: application/json; charset=utf-8");
+    die(json_encode(["status" => "error", "message" => "Koneksi ke database gagal."]));
+  }
   die("Koneksi ke database gagal, pastikan Msql sudah berjalan dan config.php sudah benar.");
 }
 

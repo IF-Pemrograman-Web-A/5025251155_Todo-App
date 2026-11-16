@@ -5,51 +5,96 @@
     Kelas   : Pemrograman Web (A)
 
 
-## Dokumentasi dan Preview E05
+## Dokumentasi dan Preview E06
 
 ### Ringkasan Implementasi
-- Pada E05, Todo App dari tugas sebelumnya dikembangkan menjadi Progressive Web App (PWA). Pengembangan ini dilakukan tanpa mengubah fitur yang sudah ada, seperti Personal, Shared, CRUD, dan upload foto.
+Pada E06, Todo App dari E05 dikembangkan agar komunikasi antara frontend dan backend memakai RESTful API. Proses tambah, tampil, ubah, centang, dan hapus todo yang sebelumnya dijalankan lewat form PHP sekarang dijalankan lewat endpoint api.php dengan http method yang sesuai.
 
-Beberapa hal yang ditambahkan pada E05 antara lain:
-- manifest.json digunakan untuk mengatur informasi aplikasi, seperti nama, icon, start URL, display mode, theme color, dan background color. File ini kemudian dihubungkan ke index.php agar browser dapat mengenali aplikasi sebagai PWA.
-- sw.js digunakan untuk menyimpan beberapa resource penting ke dalam cache, termasuk app shell dan halaman offline. Service Worker juga mengatur penghapusan cache versi lama dan strategi caching untuk setiap resource.
-- Tombol Install Aplikasi ditambahkan pada bagian header. Tombol ini muncul ketika browser mendukung proses instalasi dan akan disembunyikan setelah aplikasi berhasil dipasang.
 
-### Strategi Caching
-| Resource | Strategi | Alasan |
+
+## Daftar Endpoint
+Semua endpoint berada di api.php dan menggunakan format URL api.php/todos atau api.php/todos/{id}.
+
+### Endpoint API
+
+| Method | URL | Fungsi | Response sukses |
+|---|---|---|---|
+| GET | api.php/todos?jenis=personal atau shared | mengambil daftar todo berdasarkan menu | 200 OK |
+| GET | api.php/todos?notifikasi=belum | mengambil todo yang notifikasinya belum terkirim | 200 OK |
+| GET | api.php/todos/{id} | mengambil detail satu todo | 200 OK |
+| POST | api.php/todos | menambah todo baru | 201 Created |
+| PUT | api.php/todos/{id} | mengubah seluruh data todo yang dapat diedit | 200 OK |
+| PATCH | api.php/todos/{id} | mengubah sebagian data | 200 OK |
+| DELETE | api.php/todos/{id} | menghapus todo beserta fotonya | 204 No Content |
+
+### Response Code
+
+| Kode | Kondisi | Contoh |
 |---|---|---|
-| Halaman PHP (navigasi) | Network First, fallback ke offline.html | Data todo bersifat dinamis dan dapat berubah, terutama pada menu Shared. |
-| style.css dan script.js | Stale-While-Revalidate | Resource dapat langsung digunakan dari cache sambil diperbarui dari jaringan. |
-| Ikon dan manifest.json | Cache First | Jarang berubah |
-| uploads/ (foto todo) | Cache First | Nama file acak dan unik, isinya tidak berubah |
-| Request POST (actions.php) | Network Only | Proses tambah, ubah, dan hapus todo tetap membutuhkan koneksi ke server |
+| 200 OK | data berhasil diambil atau diperbarui | GET, PUT, PATCH |
+| 201 Created | todo berhasil dibuat, header location berisi alamat todo baru | POST |
+| 204 No Content | todo berhasil dihapus, tanpa body | DELETE |
+| 400 Bad Request | body bukan JSON yang valid, atau ID bukan angka | POST dengan body rusak, GET api.php/todos/abc |
+| 401 Unauthorized | API Key tidak dikirim | request tanpa header X-API-Key |
+| 403 Forbidden | API Key dikirim tetapi salah | X-API-Key salah |
+| 404 Not Found | todo atau endpoint tidak ditemukan | GET api.php/todos/999, api.php/orang |
+| 405 Method Not Allowed | method tidak didukung endpoint, header allow berisi method yang diizinkan | PUT api.php/todos, POST api.php/todos/1 |
+| 422 Unprocessable Content | data tidak lolos validasi: judul kosong, nama pembuat kosong pada shared, jenis atau format tanggal salah, foto tidak valid | POST dengan judul kosong |
+| 500 Internal Server Error | kesalahan database atau server | koneksi database gagal |
 
-### 1. Web App Manifest
-- Manifest berhasil terdeteksi pada DevTools melalui bagian Application-Manifest.
-![manifest](assetsE05/manifest/manifest.png)
-- Ikon aplikasi pada bagian Icons di panel Manifest
-![ikon](assetsE05/manifest/ikon.png)
 
-### 2. Service Worker dan Precache
-- Service worker berstatus activated and is running
-![service worker](assetsE05/serviceworker/sw_aktif.png)
-- Isi dari  Cache storage ada icon,  offline.html, style.css, script.js dam manifest.json
-![cache storage](assetsE05/serviceworker/cache_storage.png)
+### 1. Pengujian endpoint
+Pengujian dilakukan melalui Postman dengan header X-API-Key yang benar.
+- GET daftar todo menghasilkan 200 OK
+![get daftar](assetsE06/api/get_daftar.png)
+- GET detail todo berdasarkan ID menghasilkan 200 OK
+![get detail](assetsE06/api/get_detail.png)
+- POST todo baru menghasilkan 201 Created
+![post 201](assetsE06/api/post_201.png)
+- PUT mengubah todo menghasilkan 200 OK
+![put 200](assetsE06/api/put_200.png)
+- PATCH mencentang todo menghasilkan 200 OK
+![patch 200](assetsE06/api/patch_200.png)
+- DELETE menghapus todo menghasilkan 204 No Content
+![delete 204](assetsE06/api/delete_204.png)
 
-### 3. Install Button
-- Tombol Install Aplikasi tampil di header
-![tombol install](assetsE05/install/tombol_install.png)
-- Saat tombol ditekan, browser menampilkan dialog untuk memasang aplikasi.
-![dialog install](assetsE05/install/dialog_install.png)
-- Setelah instalasi selesai, Todo App dapat dibuka melalui window tersendiri dengan mode standalone.
-![standalone](assetsE05/install/standalone.png)
+### 2. Pengujian response code error
+- ID tidak ditemukan menghasilkan 404
+![get 404](assetsE06/api/get_404.png)
+- Endpoint tidak dikenal menghasilkan 404
+![endpoint 404](assetsE06/api/endpoint_404.png)
+- POST dengan judul kosong menghasilkan 422 beserta detail errors
+![post 422](assetsE06/api/post_422.png)
+- PUT tanpa judul menghasilkan 422
+![put 422](assetsE06/api/put_422.png)
+- Method tidak didukung menghasilkan 405 beserta header Allow
+![method 405](assetsE06/api/method_405.png)
 
-### 4. Pengujian Offline
-- Pengujian dilakukan dengan mematikan koneksi melalui opsi Offline pada DevTools, kemudian melakukan reload halaman. Saat koneksi terputus, aplikasi menampilkan halaman offline.html.
-![offline](assetsE05/offline/halaman_offline.png)
-- Pada tab Network, halaman index.php?menu=personal ditangani oleh Service Worker dan ditampilkan sebagai ServiceWorker pada kolom Size. File style.css juga tetap berhasil dimuat.Request berwarna merah dengan tipe fetch dan initiator sw.js menunjukkan permintaan jaringan yang gagal karena koneksi terputus. Service Worker kemudian menampilkan halaman offline dari cache. Sementara itu, script.js tidak diminta oleh halaman offline, tetapi sudah tersimpan di Cache Storage.
-![network offline](assetsE05/offline/network_offline.png)
-- Menambah atau mencentang todo saat offline ditolak dengan pesan peringatan
-![peringatan offline](assetsE05/offline/peringatan_offline.png)
-- Setelah online kembali dan tombol Coba Lagi ditekan, halaman todo tampil normal.
-![kembali online](assetsE05/offline/kembali_online.png)
+### 3. Pengujian autentikasi
+- Request tanpa API Key menghasilkan 401 Unauthorized
+![tanpa key](assetsE06/auth/tanpa_key_401.png)
+- Request dengan API Key yang salah menghasilkan 403 Forbidden
+![key salah](assetsE06/auth/key_salah_403.png)
+- Request dengan API Key yang benar menghasilkan 200 OK
+![key benar](assetsE06/auth/key_benar_200.png)
+
+### 4. Pengujian frontend
+- Menu Personal dan Shared tetap tampil dengan data dari API
+![personal](assetsE06/frontend/personal.png)
+![shared](assetsE06/frontend/shared.png)
+- Pada tab Network terlihat frontend memanggil api.php/todos dengan header X-API-Key
+![network get](assetsE06/frontend/network_get.png)
+- Menambah todo (POST 201), lalu todo baru muncul dan terpilih
+![tambah](assetsE06/frontend/tambah.png)
+- Mengubah todo melalui tombol Edit dan Simpan (PUT 200)
+![edit](assetsE06/frontend/edit.png)
+- Mencentang todo (PATCH 200) tanpa memuat ulang halaman
+![centang](assetsE06/frontend/centang.png)
+- Menghapus todo (DELETE 204)
+![hapus](assetsE06/frontend/hapus.png)
+- Upload foto dari kamera tetap berfungsi dan foto tampil pada panel detail
+![foto](assetsE06/frontend/foto.png)
+- Notifikasi tetap muncul pada waktunya, dan penanda sudah_notif dikirim lewat PATCH
+![notifikasi](assetsE06/frontend/notifikasi.png)
+- Pesan error dari API ditampilkan pada aplikasi (contoh: API Key salah)
+![error api](assetsE06/frontend/error_api.png)
